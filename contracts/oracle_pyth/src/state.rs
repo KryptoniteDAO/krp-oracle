@@ -36,6 +36,7 @@ pub fn read_config(storage: &dyn Storage) -> StdResult<Config> {
     singleton_read(storage, KEY_CONFIG).load()
 }
 
+
 pub fn store_pyth_feeder_config(
     storage: &mut dyn Storage,
     asset: String,
