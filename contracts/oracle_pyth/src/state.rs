@@ -21,6 +21,7 @@ pub struct PythFeederConfig {
 pub struct Config {
     pub owner: CanonicalAddr,
     pub pyth_contract: CanonicalAddr,
+    pub new_owner: Option<CanonicalAddr>,
 }
 
 pub const PYTH_FEEDER_CONFIG: Map<String, PythFeederConfig> = Map::new("pyth_feeder_config");

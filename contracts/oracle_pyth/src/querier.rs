@@ -13,9 +13,15 @@ use bigint::uint::U256;
  */
 pub fn query_config(deps: Deps) -> StdResult<ConfigResponse> {
     let config: Config = read_config(deps.storage)?;
+    let new_owner = if let Some(new_owner) = config.new_owner {
+        Some(deps.api.addr_humanize(&new_owner)?.to_string())
+    } else {
+        None
+    };
     Ok(ConfigResponse {
         owner: deps.api.addr_humanize(&config.owner)?.to_string(),
         pyth_contract: deps.api.addr_humanize(&config.pyth_contract)?.to_string(),
+        new_owner,
     })
 }
 

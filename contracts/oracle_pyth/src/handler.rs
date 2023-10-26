@@ -3,7 +3,7 @@ use crate::state::{
     read_config, read_pyth_feeder_config, store_config, store_pyth_feeder_config, Config,
     PythFeederConfig,
 };
-use cosmwasm_std::{DepsMut, MessageInfo, Response};
+use cosmwasm_std::{Addr, DepsMut, MessageInfo, Response};
 use pyth_sdk_cw::PriceIdentifier;
 
 /**
@@ -73,31 +73,6 @@ pub fn set_config_feed_valid(
     ]))
 }
 
-/**
- * Change the owner of the contract
- */
-pub fn change_owner(
-    deps: DepsMut,
-    info: MessageInfo,
-    new_owner: String,
-) -> Result<Response, ContractError> {
-    let mut config: Config = read_config(deps.storage)?;
-    if deps.api.addr_canonicalize(info.sender.as_str())? != config.owner {
-        return Err(ContractError::Unauthorized {});
-    }
-
-    config.owner = deps
-        .api
-        .addr_canonicalize(&new_owner)
-        .map_err(|_| ContractError::InvalidInput {})?;
-    store_config(deps.storage, &config)?;
-
-    Ok(Response::new().add_attributes(vec![
-        ("action", "change_owner"),
-        ("new_owner", new_owner.as_str()),
-    ]))
-}
-
 pub fn change_pyth_contract(
     deps: DepsMut,
     info: MessageInfo,
@@ -117,5 +92,48 @@ pub fn change_pyth_contract(
     Ok(Response::new().add_attributes(vec![
         ("action", "change_pyth_contract"),
         ("new_pyth_contract", new_pyth_contract.as_str()),
+    ]))
+}
+
+pub fn set_owner(
+    deps: DepsMut,
+    info: MessageInfo,
+    new_owner: Addr,
+) -> Result<Response, ContractError> {
+    let mut config: Config = read_config(deps.storage)?;
+    let sender_raw = deps.api.addr_canonicalize(info.sender.as_str())?;
+    if sender_raw != config.owner {
+        return Err(ContractError::Unauthorized {});
+    }
+    deps.api.addr_validate(new_owner.clone().as_str())?;
+
+    config.new_owner = Some(deps.api.addr_canonicalize(new_owner.as_str())?);
+    store_config(deps.storage, &config)?;
+    Ok(Response::new().add_attributes(vec![
+        ("action", "set_owner"),
+        ("new_owner", new_owner.to_string().as_str()),
+    ]))
+}
+
+pub fn accept_ownership(
+    deps: DepsMut,
+    info: MessageInfo,
+) -> Result<Response, ContractError> {
+    let mut config = read_config(deps.storage)?;
+    let sender_raw = deps.api.addr_canonicalize(info.sender.as_str())?;
+    if config.new_owner.is_none() {
+        return Err(ContractError::NoNewOwner {});
+    }
+    if sender_raw != config.new_owner.unwrap() {
+        return Err(ContractError::Unauthorized {});
+    }
+
+    config.owner = sender_raw;
+    config.new_owner = None;
+    store_config(deps.storage, &config)?;
+    Ok(Response::new().add_attributes(vec![
+        ("action", "accept_ownership"),
+        ("owner", config.owner.clone().to_string().as_str()),
+        ("new_owner", ""),
     ]))
 }

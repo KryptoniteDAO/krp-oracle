@@ -50,6 +50,7 @@ pub struct PythFeederConfigResponse {
 pub struct ConfigResponse {
     pub owner: String,
     pub pyth_contract: String,
+    pub new_owner: Option<String>,
 }
 
 pub struct ConfigFeedInfoParams {
@@ -75,12 +76,13 @@ pub enum ExecuteMsg {
         asset: String,
         valid: bool,
     },
-    ChangeOwner {
-        new_owner: String,
-    },
     ChangePythContract {
         pyth_contract: String,
     },
+    SetOwner {
+        owner: Addr,
+    },
+    AcceptOwnership {},
 }
 
 #[cw_serde]

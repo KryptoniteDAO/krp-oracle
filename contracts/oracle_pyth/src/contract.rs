@@ -1,5 +1,5 @@
 use crate::error::ContractError;
-use crate::handler::{change_owner, change_pyth_contract, config_feed_info, set_config_feed_valid};
+use crate::handler::{accept_ownership, change_pyth_contract, config_feed_info, set_config_feed_valid, set_owner};
 use crate::msg::{ExecuteMsg, InstantiateMsg, MigrateMsg, QueryMsg};
 use crate::querier::{
     query_config, query_exchange_rate_by_asset_label, query_price, query_prices,
@@ -23,6 +23,7 @@ pub fn instantiate(
         &Config {
             owner: deps.api.addr_canonicalize(msg.owner.as_str())?,
             pyth_contract: deps.api.addr_canonicalize(&msg.pyth_contract)?,
+            new_owner: None,
         },
     )?;
     Ok(Response::default())
@@ -59,10 +60,11 @@ pub fn execute(
         ExecuteMsg::SetConfigFeedValid { asset, valid } => {
             set_config_feed_valid(deps, info, asset, valid)
         }
-        ExecuteMsg::ChangeOwner { new_owner } => change_owner(deps, info, new_owner),
         ExecuteMsg::ChangePythContract { pyth_contract } => {
             change_pyth_contract(deps, info, pyth_contract)
         }
+        ExecuteMsg::SetOwner { owner } => set_owner(deps, info, owner),
+        ExecuteMsg::AcceptOwnership {} => accept_ownership(deps, info),
     }
 }
 

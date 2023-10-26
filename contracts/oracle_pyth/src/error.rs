@@ -14,4 +14,6 @@ pub enum ContractError {
 
     #[error("InvalidInput")]
     InvalidInput {},
+    #[error("No new owner")]
+    NoNewOwner {},
 }

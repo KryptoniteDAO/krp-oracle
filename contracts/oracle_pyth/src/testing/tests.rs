@@ -1,4 +1,5 @@
-use crate::handler::{change_owner, change_pyth_contract, config_feed_info, set_config_feed_valid};
+use cosmwasm_std::Addr;
+use crate::handler::{accept_ownership, change_pyth_contract, config_feed_info, set_config_feed_valid, set_owner};
 use crate::querier::{query_config, query_pyth_feeder_config};
 use crate::testing::mock_fn::{mock_instantiate, mock_instantiate_msg, CREATOR, PYTH_CONTRACT};
 use cosmwasm_std::testing::mock_info;
@@ -14,11 +15,16 @@ fn test_instantiate() {
     assert_eq!(config.owner, CREATOR.clone().to_string());
 
     //change owner and pyth contract
-    let res = change_owner(deps.as_mut(), info.clone(), "new_owner".to_string());
+    let res = set_owner(deps.as_mut(), info.clone(), Addr::unchecked("new_owner"));
     assert!(res.is_ok());
+
+    let new_info = mock_info("new_owner", &[]);
+
+    let res = accept_ownership(deps.as_mut(), new_info.clone());
+    assert!(res.is_ok());
+
     let res = change_pyth_contract(deps.as_mut(), info.clone(), "new_pyth_contract".to_string());
     assert!(res.is_err());
-    let new_info = mock_info("new_owner", &[]);
     let res = change_pyth_contract(
         deps.as_mut(),
         new_info.clone(),
@@ -72,10 +78,11 @@ fn test_update_config_feed_info() {
     let feeder_config = query_pyth_feeder_config(deps.as_ref(), asset.clone()).unwrap();
     assert_eq!(feeder_config.is_valid, false);
 
-    // change owner
-    let res = change_owner(deps.as_mut(), info.clone(), "new_owner".to_string());
+    let res = set_owner(deps.as_mut(), info.clone(), Addr::unchecked("new_owner"));
     assert!(res.is_ok());
-
+    let new_info = mock_info("new_owner", &[]);
+    let res = accept_ownership(deps.as_mut(), new_info.clone());
+    assert!(res.is_ok());
     let res = set_config_feed_valid(deps.as_mut(), info.clone(), asset.clone(), false);
     assert!(res.is_err());
     let config_feed_info_res = config_feed_info(
