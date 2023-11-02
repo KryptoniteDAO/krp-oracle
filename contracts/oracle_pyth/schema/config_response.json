@@ -7,6 +7,12 @@
     "pyth_contract"
   ],
   "properties": {
+    "new_owner": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
     "owner": {
       "type": "string"
     },
