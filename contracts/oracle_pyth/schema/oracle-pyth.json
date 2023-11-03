@@ -1,0 +1,459 @@
+{
+  "contract_name": "oracle-pyth",
+  "contract_version": "0.1.1",
+  "idl_version": "1.0.0",
+  "instantiate": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "InstantiateMsg",
+    "type": "object",
+    "required": [
+      "owner",
+      "pyth_contract"
+    ],
+    "properties": {
+      "owner": {
+        "$ref": "#/definitions/Addr"
+      },
+      "pyth_contract": {
+        "type": "string"
+      }
+    },
+    "additionalProperties": false,
+    "definitions": {
+      "Addr": {
+        "description": "A human readable address.\n\nIn Cosmos, this is typically bech32 encoded. But for multi-chain smart contracts no assumptions should be made other than being UTF-8 encoded and of reasonable length.\n\nThis type represents a validated address. It can be created in the following ways 1. Use `Addr::unchecked(input)` 2. Use `let checked: Addr = deps.api.addr_validate(input)?` 3. Use `let checked: Addr = deps.api.addr_humanize(canonical_addr)?` 4. Deserialize from JSON. This must only be done from JSON that was validated before such as a contract's state. `Addr` must not be used in messages sent by the user because this would result in unvalidated instances.\n\nThis type is immutable. If you really need to mutate it (Really? Are you sure?), create a mutable copy using `let mut mutable = Addr::to_string()` and operate on that `String` instance.",
+        "type": "string"
+      }
+    }
+  },
+  "execute": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "ExecuteMsg",
+    "oneOf": [
+      {
+        "type": "object",
+        "required": [
+          "config_feed_info"
+        ],
+        "properties": {
+          "config_feed_info": {
+            "type": "object",
+            "required": [
+              "asset",
+              "check_feed_age",
+              "price_feed_age",
+              "price_feed_decimal",
+              "price_feed_id",
+              "price_feed_symbol"
+            ],
+            "properties": {
+              "asset": {
+                "type": "string"
+              },
+              "check_feed_age": {
+                "type": "boolean"
+              },
+              "price_feed_age": {
+                "type": "integer",
+                "format": "uint64",
+                "minimum": 0.0
+              },
+              "price_feed_decimal": {
+                "type": "integer",
+                "format": "uint32",
+                "minimum": 0.0
+              },
+              "price_feed_id": {
+                "type": "string"
+              },
+              "price_feed_symbol": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      },
+      {
+        "type": "object",
+        "required": [
+          "set_config_feed_valid"
+        ],
+        "properties": {
+          "set_config_feed_valid": {
+            "type": "object",
+            "required": [
+              "asset",
+              "valid"
+            ],
+            "properties": {
+              "asset": {
+                "type": "string"
+              },
+              "valid": {
+                "type": "boolean"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      },
+      {
+        "type": "object",
+        "required": [
+          "change_pyth_contract"
+        ],
+        "properties": {
+          "change_pyth_contract": {
+            "type": "object",
+            "required": [
+              "pyth_contract"
+            ],
+            "properties": {
+              "pyth_contract": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      },
+      {
+        "type": "object",
+        "required": [
+          "set_owner"
+        ],
+        "properties": {
+          "set_owner": {
+            "type": "object",
+            "required": [
+              "owner"
+            ],
+            "properties": {
+              "owner": {
+                "$ref": "#/definitions/Addr"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      },
+      {
+        "type": "object",
+        "required": [
+          "accept_ownership"
+        ],
+        "properties": {
+          "accept_ownership": {
+            "type": "object",
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      }
+    ],
+    "definitions": {
+      "Addr": {
+        "description": "A human readable address.\n\nIn Cosmos, this is typically bech32 encoded. But for multi-chain smart contracts no assumptions should be made other than being UTF-8 encoded and of reasonable length.\n\nThis type represents a validated address. It can be created in the following ways 1. Use `Addr::unchecked(input)` 2. Use `let checked: Addr = deps.api.addr_validate(input)?` 3. Use `let checked: Addr = deps.api.addr_humanize(canonical_addr)?` 4. Deserialize from JSON. This must only be done from JSON that was validated before such as a contract's state. `Addr` must not be used in messages sent by the user because this would result in unvalidated instances.\n\nThis type is immutable. If you really need to mutate it (Really? Are you sure?), create a mutable copy using `let mut mutable = Addr::to_string()` and operate on that `String` instance.",
+        "type": "string"
+      }
+    }
+  },
+  "query": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "QueryMsg",
+    "oneOf": [
+      {
+        "type": "object",
+        "required": [
+          "query_price"
+        ],
+        "properties": {
+          "query_price": {
+            "type": "object",
+            "required": [
+              "asset"
+            ],
+            "properties": {
+              "asset": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      },
+      {
+        "type": "object",
+        "required": [
+          "query_prices"
+        ],
+        "properties": {
+          "query_prices": {
+            "type": "object",
+            "required": [
+              "assets"
+            ],
+            "properties": {
+              "assets": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      },
+      {
+        "type": "object",
+        "required": [
+          "query_config"
+        ],
+        "properties": {
+          "query_config": {
+            "type": "object",
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      },
+      {
+        "type": "object",
+        "required": [
+          "query_pyth_feeder_config"
+        ],
+        "properties": {
+          "query_pyth_feeder_config": {
+            "type": "object",
+            "required": [
+              "asset"
+            ],
+            "properties": {
+              "asset": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      },
+      {
+        "type": "object",
+        "required": [
+          "query_exchange_rate_by_asset_label"
+        ],
+        "properties": {
+          "query_exchange_rate_by_asset_label": {
+            "type": "object",
+            "required": [
+              "base_label",
+              "quote_label"
+            ],
+            "properties": {
+              "base_label": {
+                "type": "string"
+              },
+              "quote_label": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      }
+    ]
+  },
+  "migrate": null,
+  "sudo": null,
+  "responses": {
+    "query_config": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "ConfigResponse",
+      "type": "object",
+      "required": [
+        "owner",
+        "pyth_contract"
+      ],
+      "properties": {
+        "new_owner": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "owner": {
+          "type": "string"
+        },
+        "pyth_contract": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "query_exchange_rate_by_asset_label": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Decimal256",
+      "description": "A fixed-point decimal value with 18 fractional digits, i.e. Decimal256(1_000_000_000_000_000_000) == 1.0 The greatest possible value that can be represented is 115792089237316195423570985008687907853269984665640564039457.584007913129639935 (which is (2^128 - 1) / 10^18)",
+      "type": "string"
+    },
+    "query_price": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "PriceResponse",
+      "type": "object",
+      "required": [
+        "asset",
+        "emv_price",
+        "emv_price_raw",
+        "last_updated_base",
+        "last_updated_quote",
+        "price",
+        "price_raw"
+      ],
+      "properties": {
+        "asset": {
+          "type": "string"
+        },
+        "emv_price": {
+          "$ref": "#/definitions/Decimal256"
+        },
+        "emv_price_raw": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "last_updated_base": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0.0
+        },
+        "last_updated_quote": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0.0
+        },
+        "price": {
+          "$ref": "#/definitions/Decimal256"
+        },
+        "price_raw": {
+          "type": "integer",
+          "format": "int64"
+        }
+      },
+      "additionalProperties": false,
+      "definitions": {
+        "Decimal256": {
+          "description": "A fixed-point decimal value with 18 fractional digits, i.e. Decimal256(1_000_000_000_000_000_000) == 1.0 The greatest possible value that can be represented is 115792089237316195423570985008687907853269984665640564039457.584007913129639935 (which is (2^128 - 1) / 10^18)",
+          "type": "string"
+        }
+      }
+    },
+    "query_prices": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Array_of_PriceResponse",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/PriceResponse"
+      },
+      "definitions": {
+        "Decimal256": {
+          "description": "A fixed-point decimal value with 18 fractional digits, i.e. Decimal256(1_000_000_000_000_000_000) == 1.0 The greatest possible value that can be represented is 115792089237316195423570985008687907853269984665640564039457.584007913129639935 (which is (2^128 - 1) / 10^18)",
+          "type": "string"
+        },
+        "PriceResponse": {
+          "type": "object",
+          "required": [
+            "asset",
+            "emv_price",
+            "emv_price_raw",
+            "last_updated_base",
+            "last_updated_quote",
+            "price",
+            "price_raw"
+          ],
+          "properties": {
+            "asset": {
+              "type": "string"
+            },
+            "emv_price": {
+              "$ref": "#/definitions/Decimal256"
+            },
+            "emv_price_raw": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "last_updated_base": {
+              "type": "integer",
+              "format": "uint64",
+              "minimum": 0.0
+            },
+            "last_updated_quote": {
+              "type": "integer",
+              "format": "uint64",
+              "minimum": 0.0
+            },
+            "price": {
+              "$ref": "#/definitions/Decimal256"
+            },
+            "price_raw": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          "additionalProperties": false
+        }
+      }
+    },
+    "query_pyth_feeder_config": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "PythFeederConfigResponse",
+      "type": "object",
+      "required": [
+        "check_feed_age",
+        "is_valid",
+        "price_feed_age",
+        "price_feed_decimal",
+        "price_feed_id",
+        "price_feed_symbol"
+      ],
+      "properties": {
+        "check_feed_age": {
+          "type": "boolean"
+        },
+        "is_valid": {
+          "type": "boolean"
+        },
+        "price_feed_age": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0.0
+        },
+        "price_feed_decimal": {
+          "type": "integer",
+          "format": "uint32",
+          "minimum": 0.0
+        },
+        "price_feed_id": {
+          "$ref": "#/definitions/Identifier"
+        },
+        "price_feed_symbol": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "definitions": {
+        "Identifier": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}
