@@ -2,9 +2,8 @@ use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
 use cosmwasm_std::{CanonicalAddr, StdError, StdResult, Storage};
-use cosmwasm_storage::{singleton, singleton_read};
 
-use cw_storage_plus::Map;
+use cw_storage_plus::{Item, Map};
 use pyth_sdk_cw::PriceIdentifier;
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
@@ -26,14 +25,15 @@ pub struct Config {
 
 pub const PYTH_FEEDER_CONFIG: Map<String, PythFeederConfig> = Map::new("pyth_feeder_config");
 
-static KEY_CONFIG: &[u8] = b"config";
+pub const KEY_CONFIG: Item<Config> = Item::new("config");
+
 
 pub fn store_config(storage: &mut dyn Storage, config: &Config) -> StdResult<()> {
-    singleton(storage, KEY_CONFIG).save(config)
+    KEY_CONFIG.save(storage, config)
 }
 
 pub fn read_config(storage: &dyn Storage) -> StdResult<Config> {
-    singleton_read(storage, KEY_CONFIG).load()
+    KEY_CONFIG.load(storage)
 }
 
 

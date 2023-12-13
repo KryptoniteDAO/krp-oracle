@@ -7,12 +7,12 @@ use pyth_sdk_cw::PriceIdentifier;
 
 #[test]
 fn test_instantiate() {
-    let msg = mock_instantiate_msg(&PYTH_CONTRACT.clone().to_string());
+    let msg = mock_instantiate_msg(&PYTH_CONTRACT.to_string());
     let (mut deps, _env, info, res) = mock_instantiate(msg);
     assert!(res.is_ok());
     let config = query_config(deps.as_ref()).unwrap();
-    assert_eq!(config.pyth_contract, PYTH_CONTRACT.clone().to_string());
-    assert_eq!(config.owner, CREATOR.clone().to_string());
+    assert_eq!(config.pyth_contract, PYTH_CONTRACT.to_string());
+    assert_eq!(config.owner, CREATOR.to_string());
 
     //change owner and pyth contract
     let res = set_owner(deps.as_mut(), info.clone(), Addr::unchecked("new_owner"));
@@ -38,7 +38,7 @@ fn test_instantiate() {
 
 #[test]
 fn test_update_config_feed_info() {
-    let msg = mock_instantiate_msg(&PYTH_CONTRACT.clone().to_string());
+    let msg = mock_instantiate_msg(&PYTH_CONTRACT.to_string());
     let (mut deps, _env, info, res) = mock_instantiate(msg);
     assert!(res.is_ok());
 
@@ -56,7 +56,7 @@ fn test_update_config_feed_info() {
         info.clone(),
         asset.clone(),
         price_feed_id_type.clone(),
-        price_feed_symbol.clone().to_string(),
+        price_feed_symbol.to_string(),
         price_feed_decimal.clone(),
         check_feed_age.clone(),
         price_feed_age.clone(),
@@ -90,7 +90,7 @@ fn test_update_config_feed_info() {
         info.clone(),
         asset.clone(),
         price_feed_id_type.clone(),
-        price_feed_symbol.clone().to_string(),
+        price_feed_symbol.to_string(),
         price_feed_decimal.clone(),
         check_feed_age.clone(),
         price_feed_age.clone(),

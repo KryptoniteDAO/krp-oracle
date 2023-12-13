@@ -1,10 +1,9 @@
 use crate::msg::{ExecuteMsg, InstantiateMsg, QueryMsg};
 use crate::state::{read_oracle_price, store_oracle_price};
 use cosmwasm_std::{
-    entry_point, to_binary, Binary, Deps, DepsMut, Env, MessageInfo, Response, StdResult,
+    entry_point, to_json_binary, Binary, Deps, DepsMut, Env, MessageInfo, Response, StdResult,
 };
-use pyth_sdk::{Price, PriceFeed};
-use pyth_sdk_cw::{PriceFeedResponse, PriceIdentifier};
+use pyth_sdk_cw::{Price, PriceFeed, PriceFeedResponse, PriceIdentifier};
 
 #[cfg_attr(not(feature = "library"), entry_point)]
 pub fn instantiate(
@@ -31,7 +30,7 @@ pub fn execute(
 #[cfg_attr(not(feature = "library"), entry_point)]
 pub fn query(deps: Deps, env: Env, msg: QueryMsg) -> StdResult<Binary> {
     match msg {
-        QueryMsg::PriceFeed { id } => to_binary(&query_price_feed(&deps, env, id)?),
+        QueryMsg::PriceFeed { id } => to_json_binary(&query_price_feed(&deps, env, id)?),
     }
 }
 

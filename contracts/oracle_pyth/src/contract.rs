@@ -7,7 +7,7 @@ use crate::querier::{
 };
 use crate::state::{store_config, Config};
 use cosmwasm_std::{
-    entry_point, to_binary, Binary, Deps, DepsMut, Env, MessageInfo, Response, StdResult,
+    entry_point, to_json_binary, Binary, Deps, DepsMut, Env, MessageInfo, Response, StdResult,
 };
 use pyth_sdk_cw::PriceIdentifier;
 
@@ -71,16 +71,16 @@ pub fn execute(
 #[cfg_attr(not(feature = "library"), entry_point)]
 pub fn query(deps: Deps, env: Env, msg: QueryMsg) -> StdResult<Binary> {
     match msg {
-        QueryMsg::QueryPrice { asset } => to_binary(&query_price(deps, env, asset)?),
-        QueryMsg::QueryPrices { assets } => to_binary(&query_prices(deps, env, assets)?),
-        QueryMsg::QueryConfig {} => to_binary(&query_config(deps)?),
+        QueryMsg::QueryPrice { asset } => to_json_binary(&query_price(deps, env, asset)?),
+        QueryMsg::QueryPrices { assets } => to_json_binary(&query_prices(deps, env, assets)?),
+        QueryMsg::QueryConfig {} => to_json_binary(&query_config(deps)?),
         QueryMsg::QueryPythFeederConfig { asset } => {
-            to_binary(&query_pyth_feeder_config(deps, asset)?)
+            to_json_binary(&query_pyth_feeder_config(deps, asset)?)
         }
         QueryMsg::QueryExchangeRateByAssetLabel {
             base_label,
             quote_label,
-        } => to_binary(&query_exchange_rate_by_asset_label(
+        } => to_json_binary(&query_exchange_rate_by_asset_label(
             deps,
             env,
             base_label,
