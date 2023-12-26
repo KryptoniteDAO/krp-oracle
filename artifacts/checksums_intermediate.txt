@@ -1,2 +1,2 @@
-775023706916bc8522ca81a6577f98f0a1ba6d7bafe99935dc40ec5097b3e61b  target/wasm32-unknown-unknown/release/mock_oracle.wasm
-129aa370c8c0f0e29e678656259d94c872b1c7367378dbcff9514ae45c16dfd0  target/wasm32-unknown-unknown/release/oracle_pyth.wasm
+ab57041614777f8270f3ed3f90c3108de17cd6792a8efc379eea4689eb4f8909  target/wasm32-unknown-unknown/release/mock_oracle.wasm
+357931a263c4b524e6b521d3c402d2800522d5d4360201f3a1963c9e788c9377  target/wasm32-unknown-unknown/release/oracle_pyth.wasm
